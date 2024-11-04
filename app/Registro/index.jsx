@@ -1,32 +1,35 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, ScrollView } from 'react-native';
 
-const RegisterScreen = ({ navigation }) => {
-  const [nome, setNome] = useState('');
-  const [sobrenome, setSobrenome] = useState('');
-  const [email, setEmail] = useState('');
-  const [data, setData] = useState('');
-  const [senha, setSenha] = useState('');
+const RegisterScreen = () => {
+  const [email, setEmail] = useState('')
+  const [nome, setNome] = useState('')
+  const [senha, setSenha] = useState('')
+  const [sobrenome, setSobrenome] = useState('')
+  const [data, setDataNascimento] = useState('')
 
-  const verificacaoRegistro = () => {
-    if (!nome || !sobrenome || !email || !data || !senha) {
-      Alert.alert('ERRO', 'Todos os campos devem estar preenchidos.');
-      return;
-    }
-
-    const emailRegex = /\S+@\S+\.\S+/;
-    if (!emailRegex.test(email)) {
-      Alert.alert('ERRO', 'Digite um email válido.');
-      return;
-    }
-
-    if (senha.length < 6) {
-      Alert.alert('ERRO', 'A senha deve ter no mínimo 6 caracteres.');
-      return;
-    }
-
-    Alert.alert('Sucesso', `Cadastro realizado com sucesso, bem-vindo(a) ${nome}!`);
-  };
+const registrarUsuario = async function () {
+  if (!nome || !email || !senha) {
+      console.log('os parametros nome, email e senha devem ser fornecidos')
+      return
+  }
+  const resposta = await fetch('http://localhost:1000/registro',{
+      method: 'POST',
+      headers: {
+      Accept: 'application/json',
+      'Content-type': 'application/json',
+  },
+      body: JSON.stringify({ name: nome, email: email, senha: senha, sobrenome: sobrenome, data: data })
+  })
+    
+if (!resposta) {
+    console.log('erro')
+} else if (resposta.status == 200) {
+    console.log('user criado com sucesso')
+} else {
+    console.log('ocorreu um erro')
+}
+}
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -63,7 +66,7 @@ const RegisterScreen = ({ navigation }) => {
         placeholder="Data de Nascimento (DD/MM/AAAA)"
         placeholderTextColor="#aaa"
         value={data}
-        onChangeText={setData}
+        onChangeText={setDataNascimento}
         keyboardType="numeric"
       />
 
@@ -77,7 +80,7 @@ const RegisterScreen = ({ navigation }) => {
       />
 
       <View style={styles.buttonContainer}>
-        <Button title="Registrar" onPress={verificacaoRegistro} color="#1DB954" />
+        <Button title="Registrar" onPress={registrarUsuario} color="#1DB954" />
       </View>
     </ScrollView>
   );

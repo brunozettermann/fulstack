@@ -9,7 +9,7 @@ const LoginScreen = () => {
   const verificacaoLogin = () => {
     if (email === '' || password === '') {
       Alert.alert('ERRO', 'Todos os campos devem estar preenchidos.');
-    } else {
+    } else {  X=    
       Alert.alert('Login', `Bem-vindo, ${email}!`);
     }
   };
